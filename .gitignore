@@ -1,3 +1,8 @@
+# Android Studio
+*.iws
+workspace.xml
+tasks.xml
+
 # Built application files
 *.apk
 *.ap_
