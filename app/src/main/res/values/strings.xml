@@ -5,4 +5,6 @@
     <string name="navigation_drawer_close">Close navigation drawer</string>
 
     <string name="action_settings">Settings</string>
+
+    <string name="performance_api_url">http://performanceapi.azurewebsites.com</string>
 </resources>

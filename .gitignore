@@ -1,7 +1,11 @@
 # Android Studio
-*.iws
-workspace.xml
-tasks.xml
+.idea/dictionaries
+*.iml
+.idea/workspace.xml
+.idea/libraries
+
+# Misc
+.DS_Store
 
 # Built application files
 *.apk
