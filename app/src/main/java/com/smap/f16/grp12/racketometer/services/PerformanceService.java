@@ -170,10 +170,7 @@ public class PerformanceService extends Service implements SessionsReceivedCallb
     public void sessionsReceived(List<Session> sessions) {
         if (sessions == null) {
             Log.i(LOG, "Sessions are null");
-            //return;
-            sessions = new ArrayList<>();
-//            DateTime longAgo = new DateTime().minusDays(1);
-//            sessions.add(new Session(longAgo, 1, "Dummy", 5, 4.4, 5.5, 6.6, 56.172183, 10.191971));
+            return;
         }
 
         Log.i(LOG, "Sessions received");

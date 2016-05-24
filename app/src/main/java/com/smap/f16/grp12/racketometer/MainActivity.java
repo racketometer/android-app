@@ -19,9 +19,17 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
 
+import com.smap.f16.grp12.racketometer.fragments.HistoryFragment;
+import com.smap.f16.grp12.racketometer.models.Session;
 import com.smap.f16.grp12.racketometer.services.PerformanceService;
 
-public class MainActivity extends BaseActivity {
+import org.joda.time.DateTime;
+
+import java.util.ArrayList;
+import java.util.List;
+
+public class MainActivity extends BaseActivity implements HistoryFragment.OnListFragmentInteractionListener {
+
     private final String LOG = "MainActivity";
 
     private boolean bound = false;
@@ -121,7 +129,36 @@ public class MainActivity extends BaseActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
         Toast.makeText(MainActivity.this, "Action " + id + " pressed", Toast.LENGTH_SHORT).show();
-        // Action clicked in navigation bar
+
+        if(performanceService != null) {
+            showHistoryFragment(R.id.fragment_container , performanceService.getSessions());
+        }
+
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void onSessionSelected(Session item) {
+        Toast.makeText(MainActivity.this, "MainActivity: session selected", Toast.LENGTH_SHORT).show();
+    }
+
+    /**
+     * Displays the History fragment
+     * @param id
+     * @param sessions
+     */
+    private void showHistoryFragment(int id, List<Session> sessions) {
+        if (findViewById(id) == null) {
+            return;
+        }
+        List<Session> test = new ArrayList<>();
+        Session testSession = new Session(1, DateTime.now(),1 , "this is a very ver yveru a fao long string eyeah", 222, 10, 10, 10, 50.5, 50.2);
+        test.add(testSession);
+        HistoryFragment fragment = HistoryFragment.newInstance(test);
+
+        getFragmentManager()
+                .beginTransaction()
+                .add(id, fragment)
+                .commit();
     }
 }

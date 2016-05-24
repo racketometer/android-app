@@ -13,4 +13,5 @@
     <string name="profile_name">Name</string>
     <string name="profile_club">Club</string>
     <string name="profile_save">Save</string>
+    <string name="history">History</string>
 </resources>
