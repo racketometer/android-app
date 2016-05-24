@@ -9,14 +9,14 @@ import org.joda.time.DateTime;
  */
 public class Session {
     private long id;
-    private DateTime date;
-    private long userId;
-    private String description;
-    private int hits;
-    private double speed;
-    private double power;
-    private double agility;
-    private Location location;
+    private final DateTime date;
+    private final long userId;
+    private final String description;
+    private final int hits;
+    private final double speed;
+    private final double power;
+    private final double agility;
+    private final Location location;
 
     public Session(long id, DateTime date, long userId, String description, int hits, double speed, double power, double agility, double latitude, double longitude) {
         this.id = id;

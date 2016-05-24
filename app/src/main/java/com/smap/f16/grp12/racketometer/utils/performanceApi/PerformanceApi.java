@@ -99,7 +99,7 @@ public class PerformanceApi extends AsyncTask<Void, Void, List<Session>> {
 
             is = conn.getInputStream();
 
-            return readIt(is, MAXIMUM_CHARACTERS);
+            return readIt(is);
         } finally {
             if (is != null) {
                 is.close();
@@ -116,14 +116,13 @@ public class PerformanceApi extends AsyncTask<Void, Void, List<Session>> {
      * This method is copied from:
      * http://developer.android.com/training/basics/network-ops/connecting.html#download
      * @param stream The stream to read.
-     * @param len The maximum length to read
      * @return String with read data.
      * @throws IOException
      */
-    private static String readIt(InputStream stream, int len) throws IOException {
+    private static String readIt(InputStream stream) throws IOException {
         Reader reader;
         reader = new InputStreamReader(stream, "UTF-8");
-        char[] buffer = new char[len];
+        char[] buffer = new char[MAXIMUM_CHARACTERS];
         reader.read(buffer);
         reader.close();
 

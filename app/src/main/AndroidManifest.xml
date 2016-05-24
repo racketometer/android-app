@@ -21,6 +21,11 @@
             </intent-filter>
         </activity>
 
+        <activity
+            android:name=".ProfileActivity"
+            android:label="@string/activity_profile_title"
+            android:theme="@style/AppTheme.NoActionBar" />
+
         <service
             android:name=".services.PerformanceService"
             android:exported="false" />

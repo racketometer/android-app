@@ -39,10 +39,6 @@ public class PerformanceService extends Service implements SessionsReceivedCallb
     private DatabaseHelper db;
     private final IBinder binder = new PerformanceServiceBinder();
 
-    public PerformanceService() {
-
-    }
-
     /**
      * Connect to service and create if needed.
      *
