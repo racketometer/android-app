@@ -8,7 +8,7 @@
 
     <string name="action_something">Something</string>
 
-    <string name="performance_api_url">http://performanceapi.azurewebsites.com</string>
+    <string name="performance_api_url">http://racketometer.azurewebsites.net/api/session/get</string>
 
     <string name="profile_name">Name</string>
     <string name="profile_club">Club</string>

@@ -22,7 +22,7 @@ import java.util.List;
  */
 public class DatabaseHelper extends SQLiteOpenHelper {
     private static final String LOG = "DatabaseHelper";
-    private static final int DATABASE_VERSION = 2;
+    private static final int DATABASE_VERSION = 3;
     private static final String DATABASE_NAME = "racketometer.db";
 
     public static abstract class SessionEntry implements BaseColumns {
@@ -65,6 +65,9 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     private static final String SQL_GET_SESSIONS =
             "SELECT * FROM " + SessionEntry.TABLE_NAME;
 
+    private static final String SQL_CLEAR_TABLE =
+            "DELETE FROM " + SessionEntry.TABLE_NAME;
+
     public DatabaseHelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
     }
@@ -92,6 +95,14 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         }
 
         db.close();
+    }
+
+    /**
+     * Remove all sessions in database.
+     */
+    public void clearSessions() {
+        SQLiteDatabase db = this.getWritableDatabase();
+        db.execSQL(SQL_CLEAR_TABLE);
     }
 
     /**

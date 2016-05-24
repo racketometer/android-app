@@ -61,6 +61,13 @@ public class PerformanceService extends Service implements SessionsReceivedCallb
     }
 
     /**
+     * Clear sessions from database cache.
+     */
+    public void clearSessions() {
+        db.clearSessions();
+    }
+
+    /**
      * Service binder providing access to the service instance.
      */
     public class PerformanceServiceBinder extends Binder {
@@ -122,8 +129,10 @@ public class PerformanceService extends Service implements SessionsReceivedCallb
 
     /**
      * Get sessions from Performance API asynchronous.
+     * Removes any existing sessions in database cache.
      */
     public void getSessionsFromApi() {
+        db.clearSessions();
         PerformanceApi api = new PerformanceApi(this, this);
         api.execute();
     }

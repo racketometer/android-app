@@ -65,7 +65,7 @@ class JsonParser {
      * @throws JSONException
      */
     private static double getAgility(JSONObject jsonObject) throws JSONException {
-        return jsonObject.getDouble("agility");
+        return jsonObject.getDouble("Agility");
     }
 
     /**
@@ -75,7 +75,7 @@ class JsonParser {
      * @throws JSONException
      */
     private static String getDescription(JSONObject jsonObject) throws JSONException {
-        return jsonObject.getString("description");
+        return jsonObject.getString("Description");
     }
 
     /**
@@ -85,7 +85,7 @@ class JsonParser {
      * @throws JSONException
      */
     private static int getHits(JSONObject jsonObject) throws JSONException {
-        return jsonObject.getInt("hits");
+        return jsonObject.getInt("Hits");
     }
 
     /**
@@ -95,7 +95,7 @@ class JsonParser {
      * @throws JSONException
      */
     private static double getLatitude(JSONObject jsonObject) throws JSONException {
-        return jsonObject.getJSONObject("location").getDouble("lat");
+        return jsonObject.getDouble("Latitude");
     }
 
     /**
@@ -105,7 +105,7 @@ class JsonParser {
      * @throws JSONException
      */
     private static double getLongitude(JSONObject jsonObject) throws JSONException {
-        return jsonObject.getJSONObject("location").getDouble("long");
+        return jsonObject.getDouble("Longitude");
     }
 
     /**
@@ -115,7 +115,7 @@ class JsonParser {
      * @throws JSONException
      */
     private static double getPower(JSONObject jsonObject) throws JSONException {
-        return jsonObject.getDouble("power");
+        return jsonObject.getDouble("Power");
     }
 
     /**
@@ -125,7 +125,7 @@ class JsonParser {
      * @throws JSONException
      */
     private static double getSpeed(JSONObject jsonObject) throws JSONException {
-        return jsonObject.getDouble("speed");
+        return jsonObject.getDouble("Speed");
     }
 
     /**
@@ -135,7 +135,7 @@ class JsonParser {
      * @throws JSONException
      */
     private static long getTimestamp(JSONObject jsonObject) throws JSONException {
-        return jsonObject.getLong("date");
+        return jsonObject.getLong("Date");
     }
 
     /**
@@ -145,6 +145,6 @@ class JsonParser {
      * @throws JSONException
      */
     private static long getUserId(JSONObject jsonObject) throws JSONException {
-        return jsonObject.getLong("userId");
+        return jsonObject.getLong("UserId");
     }
 }
