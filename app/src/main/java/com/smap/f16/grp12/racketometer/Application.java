@@ -7,10 +7,9 @@ import android.os.IBinder;
 import com.smap.f16.grp12.racketometer.services.PerformanceService;
 
 /**
- * Created by bjornsorensen on 24/05/16.
+ * Application extension to enable local cache initialization from WebAPI.
  */
 public class Application extends android.app.Application {
-    private boolean bound = false;
     private PerformanceService performanceService;
 
     @Override
@@ -20,9 +19,6 @@ public class Application extends android.app.Application {
         PerformanceService.bindService(this, serviceConnection);
     }
 
-    /**
-     * ServiceConnection to performance service.
-     */
     private final ServiceConnection serviceConnection = new ServiceConnection() {
         @Override
         public void onServiceConnected(ComponentName className, IBinder service) {
@@ -36,7 +32,7 @@ public class Application extends android.app.Application {
 
         @Override
         public void onServiceDisconnected(ComponentName arg0) {
-            bound = false;
+            performanceService = null;
         }
     };
 }

@@ -1,7 +1,5 @@
 package com.smap.f16.grp12.racketometer.models;
 
-import android.location.Location;
-
 import org.joda.time.DateTime;
 
 /**
@@ -13,10 +11,9 @@ public class Session {
     private final long userId;
     private final String description;
     private final int hits;
-    private final double speed;
-    private final double power;
-    private final double agility;
-    private final Location location;
+    private final Attributes attributes;
+    private final double longitude;
+    private final double latitude;
 
     public Session(long id, DateTime date, long userId, String description, int hits, double speed, double power, double agility, double latitude, double longitude) {
         this.id = id;
@@ -24,12 +21,9 @@ public class Session {
         this.userId = userId;
         this.description = description;
         this.hits = hits;
-        this.speed = speed;
-        this.power = power;
-        this.agility = agility;
-        this.location = new Location("api");
-        this.location.setLongitude(longitude);
-        this.location.setLatitude(latitude);
+        this.attributes = new Attributes(agility, power, speed);
+        this.longitude = longitude;
+        this.latitude = latitude;
     }
 
     public Session(DateTime date, long userId, String description, int hits, double speed, double power, double agility, double latitude, double longitude) {
@@ -37,12 +31,9 @@ public class Session {
         this.userId = userId;
         this.description = description;
         this.hits = hits;
-        this.speed = speed;
-        this.power = power;
-        this.agility = agility;
-        this.location = new Location("api");
-        this.location.setLongitude(longitude);
-        this.location.setLatitude(latitude);
+        this.attributes = new Attributes(agility, power, speed);
+        this.longitude = longitude;
+        this.latitude = latitude;
     }
 
     public long getId() {
@@ -66,29 +57,25 @@ public class Session {
     }
 
     public double getSpeed() {
-        return speed;
+        return attributes.getSpeed();
     }
 
     public double getPower() {
-        return power;
+        return attributes.getPower();
     }
 
     public double getAgility() {
-        return agility;
-    }
-
-    public Location getLocation() {
-        return location;
-    }
-
-    public double getLatitude() {
-        return location.getLatitude();
+        return attributes.getAgility();
     }
 
     public double getLongitude() {
-        return location.getLongitude();
+        return longitude;
     }
-    
+
+    public double getLatitude() {
+        return latitude;
+    }
+
     public String dump() {
         return "\n" +
                 "ID:          " + getId() + "\n" +
@@ -99,6 +86,6 @@ public class Session {
                 "Speed:       " + getSpeed() + "\n" +
                 "Power:       " + getPower() + "\n" +
                 "Agility:     " + getAgility() + "\n" +
-                "Location:    " + getLocation().toString();
+                "Location:    " + getLatitude() + " " + getLongitude();
     }
 }

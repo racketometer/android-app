@@ -6,12 +6,19 @@
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
 
-    <string name="action_something">Something</string>
-
     <string name="performance_api_url">http://racketometer.azurewebsites.net/api/session/get</string>
 
     <string name="profile_name">Name</string>
     <string name="profile_club">Club</string>
     <string name="profile_save">Save</string>
-    <string name="history">History</string>
+
+    <string name="menu_history">History</string>
+    <string name="menu_refresh">Refresh</string>
+
+    <string name="overview_speed">Speed</string>
+    <string name="overview_agility">Agility</string>
+    <string name="overview_power">Power</string>
+    <string name="overview_chart_description">Last 5 performances</string>
+
+    <string name="no_data_header">No data in the sky. Upload your performance to get started.</string>
 </resources>

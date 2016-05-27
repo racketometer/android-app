@@ -1,8 +1,8 @@
 package com.smap.f16.grp12.racketometer.fragments;
 
+import android.app.Fragment;
 import android.content.Context;
 import android.os.Bundle;
-import android.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,7 +14,6 @@ import com.smap.f16.grp12.racketometer.adaptors.SessionAdaptor;
 import com.smap.f16.grp12.racketometer.models.Session;
 
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -27,7 +26,6 @@ public class HistoryFragment extends Fragment {
 
     private ListView lstView;
     private List<Session> sessions;
-    private SessionAdaptor sessionAdaptor;
     private OnListFragmentInteractionListener mListener;
 
     private static final String SESSIONS =
@@ -63,10 +61,10 @@ public class HistoryFragment extends Fragment {
     }
 
     /**
-     * Sets the adaptor on the listview and adds an event listener
+     * Sets the adaptor on the listView and adds an event listener
      */
     private void initListView() {
-        sessionAdaptor = new SessionAdaptor(this.getContext(), sessions);
+        SessionAdaptor sessionAdaptor = new SessionAdaptor(this.getContext(), sessions);
         lstView.setAdapter(sessionAdaptor);
 
         lstView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -78,8 +76,8 @@ public class HistoryFragment extends Fragment {
     }
 
     /**
-     * Finds and sets the listview
-     * @param view
+     * Finds and sets the listView
+     * @param view The view.
      */
     private void initUiReferences(View view) {
         lstView = (ListView) view.findViewById(R.id.history);

@@ -1,5 +1,6 @@
 package com.smap.f16.grp12.racketometer;
 
+import android.app.Fragment;
 import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.Context;
@@ -8,46 +9,54 @@ import android.content.IntentFilter;
 import android.content.ServiceConnection;
 import android.os.Bundle;
 import android.os.IBinder;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.util.Log;
-import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
 import android.widget.Toast;
 
 import com.smap.f16.grp12.racketometer.fragments.HistoryFragment;
+import com.smap.f16.grp12.racketometer.fragments.NoDataFragment;
+import com.smap.f16.grp12.racketometer.fragments.OverviewFragment;
 import com.smap.f16.grp12.racketometer.models.Session;
 import com.smap.f16.grp12.racketometer.services.PerformanceService;
-
-import org.joda.time.DateTime;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class MainActivity extends BaseActivity implements HistoryFragment.OnListFragmentInteractionListener {
+public class MainActivity
+        extends BaseActivity
+        implements HistoryFragment.OnListFragmentInteractionListener {
 
     private final String LOG = "MainActivity";
 
     private boolean bound = false;
+    private List<Session> sessions;
+
     private PerformanceService performanceService;
+
+    private BroadcastReceiver performanceListener;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+    }
 
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-            }
-        });
+    @Override
+    protected void onResume() {
+        super.onResume();
+        initMainFragment();
+    }
+
+    private void initMainFragment() {
+        sessions = getSessions();
+        if (sessions.size() == 0) {
+            showNoDataFragment();
+        } else {
+            showOverviewFragment(R.id.fragment_container);
+        }
     }
 
     @Override
@@ -61,33 +70,161 @@ public class MainActivity extends BaseActivity implements HistoryFragment.OnList
     protected void onStop() {
         super.onStop();
 
-        if(!bound) {
-            return;
-        }
+        removeBroadcastListener();
 
-        PerformanceService.unbindService(this, serviceConnection);
-        bound = false;
+        if (bound) {
+            PerformanceService.unbindService(this, serviceConnection);
+            bound = false;
+        }
     }
 
     /**
      * Handle new data broadcast reception.
      */
     private void newDataAvailable() {
-        Log.i(LOG, "Broadcast received");
-        // get new data from service
+        sessions = getSessions();
+        initMainFragment();
+        updateFragmentData();
     }
 
     /**
-     * Initialize broadcast listeners.
+     * Update fragments with new session data.
+     */
+    private void updateFragmentData() {
+        Fragment fragment = getFragmentManager().findFragmentById(R.id.fragment_container);
+
+        if (fragment instanceof OverviewFragment) {
+            OverviewFragment overviewFragment = (OverviewFragment) fragment;
+            overviewFragment.setSessions(sessions);
+        }
+
+        if (fragment instanceof HistoryFragment) {
+            // set history fragment sessions
+            Log.i(LOG, "history fragment showing");
+        }
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.menu_history:
+                showHistoryFragment(getSessions());
+                break;
+            case R.id.menu_refresh:
+                if (performanceService != null) {
+                    performanceService.getSessionsFromApi();
+                }
+                break;
+        }
+
+        return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void onSessionSelected(Session item) {
+        Toast.makeText(MainActivity.this, "MainActivity: session selected", Toast.LENGTH_SHORT).show();
+    }
+
+    /**
+     * Displays the History fragment
+     *
+     * @param sessions    The sessions to use.
+     */
+    private void showHistoryFragment(List<Session> sessions) {
+        if (findViewById(R.id.fragment_container) == null) {
+            return;
+        }
+
+        Fragment historyFragment = getFragmentManager().findFragmentById(R.id.fragment_container);
+        if (historyFragment instanceof HistoryFragment) {
+            return;
+        }
+
+        historyFragment = HistoryFragment.newInstance(sessions);
+
+        getFragmentManager()
+                .beginTransaction()
+                .replace(R.id.fragment_container, historyFragment)
+                .addToBackStack(null)
+                .commit();
+    }
+
+    /**
+     * Displays the Overview fragment
+     *
+     * @param containerId The fragment container id.
+     */
+    private void showOverviewFragment(int containerId) {
+        if (findViewById(containerId) == null) {
+            return;
+        }
+
+        Fragment overviewFragment = getFragmentManager().findFragmentById(containerId);
+        if (overviewFragment instanceof OverviewFragment) {
+            return;
+        }
+
+        overviewFragment = OverviewFragment.newInstance(sessions);
+
+        getFragmentManager()
+                .beginTransaction()
+                .replace(containerId, overviewFragment)
+                .commit();
+    }
+
+    private void showNoDataFragment() {
+        if (findViewById(R.id.fragment_container) == null) {
+            return;
+        }
+
+        Fragment noDataFragment = getFragmentManager().findFragmentById(R.id.fragment_container);
+        if (noDataFragment instanceof NoDataFragment) {
+            return;
+        }
+
+        noDataFragment = NoDataFragment.newInstance();
+
+        getFragmentManager()
+                .beginTransaction()
+                .replace(R.id.fragment_container, noDataFragment)
+                .commit();
+    }
+
+    /**
+     * Get sessions from performance service or empty list.
+     *
+     * @return List of {@link Session}.
+     */
+    private List<Session> getSessions() {
+        if (performanceService != null) {
+            return performanceService.getSessions();
+        } else {
+            return new ArrayList<>();
+        }
+    }
+
+    /**
+     * Add broadcast listener.
      */
     private void initBroadcastListener() {
         LocalBroadcastManager localBroadcastManager = LocalBroadcastManager.getInstance(this);
-        localBroadcastManager.registerReceiver(new BroadcastReceiver() {
+        performanceListener = new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
                 newDataAvailable();
             }
-        }, new IntentFilter(PerformanceService.NEW_SESSION_DATA));
+        };
+
+        localBroadcastManager.registerReceiver(performanceListener, new IntentFilter(PerformanceService.NEW_SESSION_DATA));
+    }
+
+    /**
+     * Remove broadcast listener.
+     */
+    private void removeBroadcastListener() {
+        LocalBroadcastManager localBroadcastManager = LocalBroadcastManager.getInstance(this);
+        localBroadcastManager.unregisterReceiver(performanceListener);
+        performanceListener = null;
     }
 
     /**
@@ -101,6 +238,7 @@ public class MainActivity extends BaseActivity implements HistoryFragment.OnList
 
             performanceService = binder.getService();
             bound = true;
+            performanceService.getSessionsFromApi();
         }
 
         @Override
@@ -117,48 +255,5 @@ public class MainActivity extends BaseActivity implements HistoryFragment.OnList
         } else {
             super.onBackPressed();
         }
-    }
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.main, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        int id = item.getItemId();
-        Toast.makeText(MainActivity.this, "Action " + id + " pressed", Toast.LENGTH_SHORT).show();
-
-        if(performanceService != null) {
-            showHistoryFragment(R.id.fragment_container , performanceService.getSessions());
-        }
-
-        return super.onOptionsItemSelected(item);
-    }
-
-    @Override
-    public void onSessionSelected(Session item) {
-        Toast.makeText(MainActivity.this, "MainActivity: session selected", Toast.LENGTH_SHORT).show();
-    }
-
-    /**
-     * Displays the History fragment
-     * @param id
-     * @param sessions
-     */
-    private void showHistoryFragment(int id, List<Session> sessions) {
-        if (findViewById(id) == null) {
-            return;
-        }
-        List<Session> test = new ArrayList<>();
-        Session testSession = new Session(1, DateTime.now(),1 , "this is a very ver yveru a fao long string eyeah", 222, 10, 10, 10, 50.5, 50.2);
-        test.add(testSession);
-        HistoryFragment fragment = HistoryFragment.newInstance(test);
-
-        getFragmentManager()
-                .beginTransaction()
-                .add(id, fragment)
-                .commit();
     }
 }

@@ -19,9 +19,8 @@ import java.util.List;
  */
 public class SessionAdaptor extends BaseAdapter {
 
-    private Context context;
-    private List<Session> sessions;
-    private Session session;
+    private final Context context;
+    private final List<Session> sessions;
 
     public SessionAdaptor(Context context , List<Session> items) {
         this.context = context;
@@ -46,11 +45,11 @@ public class SessionAdaptor extends BaseAdapter {
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         if(convertView == null) {
-            LayoutInflater sessionInflator = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-            convertView = sessionInflator.inflate(R.layout.fragment_history_session_adaptor, null);
+            LayoutInflater sessionInflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+            convertView = sessionInflater.inflate(R.layout.fragment_history_session_adaptor, null);
         }
 
-        session = sessions.get(position);
+        Session session = sessions.get(position);
 
         if(session == null) {
             return convertView;
