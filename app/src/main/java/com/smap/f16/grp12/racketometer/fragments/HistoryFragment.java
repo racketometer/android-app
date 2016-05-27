@@ -103,7 +103,7 @@ public class HistoryFragment extends Fragment {
     /**
      * Gets fragment arguments
      */
-    public void getSessions() {
+    private void getSessions() {
         sessions = (List<Session>) getArguments().getSerializable(SESSIONS);
     }
 

@@ -41,13 +41,14 @@ public class OverviewFragment extends Fragment {
 
     private OverviewChart overviewChart;
 
-    public OverviewFragment() { }
+    public OverviewFragment() {
+    }
 
     /**
      * Create instance of Overview Fragment.
      *
-     * @return A new instance of fragment OverviewFragment.
      * @param sessions The sessions.
+     * @return A new instance of fragment OverviewFragment.
      */
     public static OverviewFragment newInstance(List<Session> sessions) {
         OverviewFragment fragment = new OverviewFragment();
@@ -65,9 +66,9 @@ public class OverviewFragment extends Fragment {
         setHasOptionsMenu(true);
 
         Bundle arguments = getArguments();
-        if(arguments != null) {
+        if (arguments != null) {
             sessions = (List<Session>) arguments.getSerializable(ARG_SESSIONS);
-            if(sessions == null) {
+            if (sessions == null) {
                 sessions = new ArrayList<>();
             }
         }
@@ -93,6 +94,7 @@ public class OverviewFragment extends Fragment {
 
     /**
      * Set list of {@link Session}.
+     *
      * @param sessions The Sessions.
      */
     public void setSessions(List<Session> sessions) {
@@ -106,7 +108,7 @@ public class OverviewFragment extends Fragment {
     private void updateView() {
         Attributes attributes = PerformanceFormatter.getAveragedAttributes(this.sessions);
 
-        if(attributes == null || this.sessions == null || this.sessions.size() == 0) {
+        if (attributes == null || this.sessions == null || this.sessions.size() == 0) {
             return;
         }
 

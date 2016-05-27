@@ -1,13 +1,12 @@
 package com.smap.f16.grp12.racketometer.services;
 
 import android.app.Service;
-import android.content.Intent;
 import android.content.Context;
+import android.content.Intent;
 import android.content.ServiceConnection;
 import android.os.Binder;
 import android.os.IBinder;
 import android.support.v4.content.LocalBroadcastManager;
-import android.util.Log;
 
 import com.smap.f16.grp12.racketometer.models.Session;
 import com.smap.f16.grp12.racketometer.utils.DatabaseHelper;
@@ -73,6 +72,7 @@ public class PerformanceService extends Service implements SessionsReceivedCallb
     public class PerformanceServiceBinder extends Binder {
         /**
          * Get current service instance.
+         *
          * @return The service instance.
          */
         public PerformanceService getService() {
@@ -91,12 +91,13 @@ public class PerformanceService extends Service implements SessionsReceivedCallb
 
     /**
      * Get Session by ID
+     *
      * @param id The Session id.
      * @return The Session or null if not found.
      */
     public Session getSession(int id) {
-        for(Session session : sessions) {
-            if(session.getId() == id) {
+        for (Session session : sessions) {
+            if (session.getId() == id) {
                 return session;
             }
         }
@@ -106,6 +107,7 @@ public class PerformanceService extends Service implements SessionsReceivedCallb
 
     /**
      * Get sessions from past week.
+     *
      * @return The sessions.
      */
     public List<Session> getOverview() {
@@ -118,8 +120,8 @@ public class PerformanceService extends Service implements SessionsReceivedCallb
                 .withSecondOfMinute(0)
                 .withMillisOfSecond(0);
 
-        for(Session session : this.sessions) {
-            if(twoWeeksAgo.isBefore(session.getDate())) {
+        for (Session session : this.sessions) {
+            if (twoWeeksAgo.isBefore(session.getDate())) {
                 sessions.add(session);
             }
         }
@@ -154,7 +156,7 @@ public class PerformanceService extends Service implements SessionsReceivedCallb
      * Start service operation.
      */
     private void initialize() {
-        if(db == null) {
+        if (db == null) {
             db = new DatabaseHelper(this);
         }
 
@@ -169,11 +171,8 @@ public class PerformanceService extends Service implements SessionsReceivedCallb
     @Override
     public void sessionsReceived(List<Session> sessions) {
         if (sessions == null) {
-            Log.i(LOG, "Sessions are null");
             return;
         }
-
-        Log.i(LOG, "Sessions received");
 
         for (int i = 0; i < sessions.size(); i++) {
             db.createSession(sessions.get(i));

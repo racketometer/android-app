@@ -24,7 +24,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_margin="@dimen/adaptor_text_margin"
-        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true"
         android:layout_below="@id/adaptorDescription"
         android:textAppearance="?attr/textAppearanceListItem" />
 </RelativeLayout>

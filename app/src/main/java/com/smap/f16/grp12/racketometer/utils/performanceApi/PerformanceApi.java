@@ -6,6 +6,7 @@ import android.util.Log;
 
 import com.smap.f16.grp12.racketometer.R;
 import com.smap.f16.grp12.racketometer.models.Session;
+import com.smap.f16.grp12.racketometer.utils.ConnectivityHelper;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -26,9 +27,11 @@ public class PerformanceApi extends AsyncTask<Void, Void, List<Session>> {
     private final static int REQUEST_TIMEOUT = 5000;
     private final static int CONNECTION_TIMEOUT = 10000;
 
+    private final Context context;
     private final SessionsReceivedCallback listener;
 
     public PerformanceApi(Context context, SessionsReceivedCallback listener) {
+        this.context = context;
         this.listener = listener;
 
         API_URL = context.getString(R.string.performance_api_url);
@@ -41,6 +44,7 @@ public class PerformanceApi extends AsyncTask<Void, Void, List<Session>> {
 
     /**
      * Get sessions from the API.
+     *
      * @return The received sessions or null.
      */
     private List<Session> getSessions() {
@@ -60,6 +64,7 @@ public class PerformanceApi extends AsyncTask<Void, Void, List<Session>> {
 
     /**
      * Callback method when task has finished.
+     *
      * @param sessions The result of the task.
      */
     @Override
@@ -73,48 +78,55 @@ public class PerformanceApi extends AsyncTask<Void, Void, List<Session>> {
      * Get JSON data from url with HTTP GET request.
      * This method is partially copied from:
      * http://developer.android.com/training/basics/network-ops/connecting.html#download
+     *
      * @param urlString The URL to connect to.
      * @return JSON string with received data or null on connection errors.
      * @throws IOException
      */
     private String downloadUrl(String urlString) throws IOException {
-        InputStream is = null;
-        HttpURLConnection conn = null;
+        ConnectivityHelper connectivityHelper = new ConnectivityHelper(context);
 
-        try {
-            URL url = new URL(urlString);
-            conn = (HttpURLConnection) url.openConnection();
-            conn.setReadTimeout(REQUEST_TIMEOUT);
-            conn.setConnectTimeout(CONNECTION_TIMEOUT);
-            conn.setRequestMethod("GET");
-            conn.setDoInput(true);
+        if (connectivityHelper.isOnline()) {
+            InputStream is = null;
+            HttpURLConnection conn = null;
 
-            conn.connect();
-            int response = conn.getResponseCode();
+            try {
+                URL url = new URL(urlString);
+                conn = (HttpURLConnection) url.openConnection();
+                conn.setReadTimeout(REQUEST_TIMEOUT);
+                conn.setConnectTimeout(CONNECTION_TIMEOUT);
+                conn.setRequestMethod("GET");
+                conn.setDoInput(true);
 
-            if(response < 200 || response > 299) {
-                Log.e(LOG, "Bad response from PerformanceAPI. Response code: " + response);
-                return null;
-            }
+                conn.connect();
+                int response = conn.getResponseCode();
 
-            is = conn.getInputStream();
+                if (response < 200 || response > 299) {
+                    Log.e(LOG, "Bad response from PerformanceAPI. Response code: " + response);
+                    return null;
+                }
 
-            return readIt(is);
-        } finally {
-            if (is != null) {
-                is.close();
-            }
+                is = conn.getInputStream();
 
-            if (conn != null) {
-                conn.disconnect();
+                return readIt(is);
+            } finally {
+                if (is != null) {
+                    is.close();
+                }
+
+                if (conn != null) {
+                    conn.disconnect();
+                }
             }
         }
+        return null;
     }
 
     /**
      * Read input stream with a maximum of characters.
      * This method is copied from:
      * http://developer.android.com/training/basics/network-ops/connecting.html#download
+     *
      * @param stream The stream to read.
      * @return String with read data.
      * @throws IOException

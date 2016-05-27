@@ -16,7 +16,7 @@ import android.view.MenuItem;
 
 /**
  * BaseActivity handling navigation drawer.
- * Inspired by: http://stackoverflow.com/questions/19451715/same-navigation-drawer-in-different-activities#answer-19451842
+ * Inspired by: http://stackoverflow.com/a/19451842/5324369
  */
 @SuppressLint("Registered")
 public class BaseActivity extends AppCompatActivity

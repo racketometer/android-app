@@ -14,6 +14,8 @@ import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.util.Log;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.smap.f16.grp12.racketometer.fragments.HistoryFragment;
@@ -21,6 +23,7 @@ import com.smap.f16.grp12.racketometer.fragments.NoDataFragment;
 import com.smap.f16.grp12.racketometer.fragments.OverviewFragment;
 import com.smap.f16.grp12.racketometer.models.Session;
 import com.smap.f16.grp12.racketometer.services.PerformanceService;
+import com.smap.f16.grp12.racketometer.utils.ConnectivityHelper;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -35,34 +38,38 @@ public class MainActivity
     private List<Session> sessions;
 
     private PerformanceService performanceService;
-
     private BroadcastReceiver performanceListener;
+    private BroadcastReceiver internetListener;
+
+    private TextView txtError;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        initUiReferences();
     }
 
-    @Override
-    protected void onResume() {
-        super.onResume();
-        initMainFragment();
+    private void initUiReferences() {
+        txtError = (TextView) findViewById(R.id.txt_error);
     }
 
     private void initMainFragment() {
         sessions = getSessions();
+
         if (sessions.size() == 0) {
             showNoDataFragment();
         } else {
             showOverviewFragment();
         }
+
+        updateFragmentData();
     }
 
     @Override
     protected void onStart() {
         super.onStart();
-        initBroadcastListener();
+        initBroadcastListeners();
         PerformanceService.bindService(this, serviceConnection);
     }
 
@@ -70,7 +77,7 @@ public class MainActivity
     protected void onStop() {
         super.onStop();
 
-        removeBroadcastListener();
+        removeBroadcastListeners();
 
         if (bound) {
             PerformanceService.unbindService(this, serviceConnection);
@@ -84,7 +91,6 @@ public class MainActivity
     private void newDataAvailable() {
         sessions = getSessions();
         initMainFragment();
-        updateFragmentData();
     }
 
     /**
@@ -202,9 +208,9 @@ public class MainActivity
     }
 
     /**
-     * Add broadcast listener.
+     * Add broadcast listeners.
      */
-    private void initBroadcastListener() {
+    private void initBroadcastListeners() {
         LocalBroadcastManager localBroadcastManager = LocalBroadcastManager.getInstance(this);
         performanceListener = new BroadcastReceiver() {
             @Override
@@ -212,17 +218,43 @@ public class MainActivity
                 newDataAvailable();
             }
         };
-
         localBroadcastManager.registerReceiver(performanceListener, new IntentFilter(PerformanceService.NEW_SESSION_DATA));
+
+        internetListener = new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                internetStatusAvailable(intent);
+            }
+        };
+        localBroadcastManager.registerReceiver(internetListener, new IntentFilter(ConnectivityHelper.INTERNET_STATUS));
     }
 
     /**
-     * Remove broadcast listener.
+     * Handle internet status change.
+     * @param intent The intent.
      */
-    private void removeBroadcastListener() {
+    private void internetStatusAvailable(Intent intent) {
+        boolean isOnline = intent.getBooleanExtra(ConnectivityHelper.EXTRA_STATUS, false);
+        if(isOnline) {
+            txtError.setVisibility(View.GONE);
+            return;
+        }
+
+        txtError.setText(getResources().getText(R.string.no_internet));
+        txtError.setVisibility(View.VISIBLE);
+    }
+
+    /**
+     * Remove broadcast listeners.
+     */
+    private void removeBroadcastListeners() {
         LocalBroadcastManager localBroadcastManager = LocalBroadcastManager.getInstance(this);
+
         localBroadcastManager.unregisterReceiver(performanceListener);
+        localBroadcastManager.unregisterReceiver(internetListener);
+
         performanceListener = null;
+        internetListener = null;
     }
 
     /**
@@ -236,7 +268,7 @@ public class MainActivity
 
             performanceService = binder.getService();
             bound = true;
-            performanceService.getSessionsFromApi();
+            initMainFragment();
         }
 
         @Override
