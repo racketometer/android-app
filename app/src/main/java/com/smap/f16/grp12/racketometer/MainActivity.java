@@ -55,7 +55,7 @@ public class MainActivity
         if (sessions.size() == 0) {
             showNoDataFragment();
         } else {
-            showOverviewFragment(R.id.fragment_container);
+            showOverviewFragment();
         }
     }
 
@@ -126,7 +126,7 @@ public class MainActivity
     }
 
     /**
-     * Displays the History fragment
+     * Displays the History fragment.
      *
      * @param sessions    The sessions to use.
      */
@@ -150,16 +150,14 @@ public class MainActivity
     }
 
     /**
-     * Displays the Overview fragment
-     *
-     * @param containerId The fragment container id.
+     * Displays the Overview fragment.
      */
-    private void showOverviewFragment(int containerId) {
-        if (findViewById(containerId) == null) {
+    private void showOverviewFragment() {
+        if (findViewById(R.id.fragment_container) == null) {
             return;
         }
 
-        Fragment overviewFragment = getFragmentManager().findFragmentById(containerId);
+        Fragment overviewFragment = getFragmentManager().findFragmentById(R.id.fragment_container);
         if (overviewFragment instanceof OverviewFragment) {
             return;
         }
@@ -168,7 +166,7 @@ public class MainActivity
 
         getFragmentManager()
                 .beginTransaction()
-                .replace(containerId, overviewFragment)
+                .replace(R.id.fragment_container, overviewFragment)
                 .commit();
     }
 
