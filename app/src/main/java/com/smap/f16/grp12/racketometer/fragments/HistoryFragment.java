@@ -3,6 +3,7 @@ package com.smap.f16.grp12.racketometer.fragments;
 import android.app.Fragment;
 import android.content.Context;
 import android.os.Bundle;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,27 +19,29 @@ import java.util.List;
 
 /**
  * A fragment representing a list of Items.
- * <p>
+ * <p/>
  * Activities containing this fragment MUST implement the {@link OnListFragmentInteractionListener}
  * interface.
  */
 public class HistoryFragment extends Fragment {
 
     private ListView lstView;
+    private SwipeRefreshLayout refreshLayout;
     private List<Session> sessions;
     private OnListFragmentInteractionListener mListener;
 
     private static final String SESSIONS =
             "com.smap.f16.grp12.racketometer.fragments.HistoryFragment.SESSIONS";
 
-    public HistoryFragment() {}
+    public HistoryFragment() {
+    }
 
     public static HistoryFragment newInstance(List<Session> list) {
         HistoryFragment fragment = new HistoryFragment();
 
         Bundle args = new Bundle();
 
-        args.putSerializable(SESSIONS, (Serializable)list);
+        args.putSerializable(SESSIONS, (Serializable) list);
         fragment.setArguments(args);
 
         return fragment;
@@ -53,11 +56,20 @@ public class HistoryFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_history, container, false);
 
         initUiReferences(view);
-
+        initRefreshHandler();
         getSessions();
 
         initListView();
         return view;
+    }
+
+    private void initRefreshHandler() {
+        refreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                mListener.onRefresh(refreshLayout);
+            }
+        });
     }
 
     /**
@@ -77,10 +89,12 @@ public class HistoryFragment extends Fragment {
 
     /**
      * Finds and sets the listView
+     *
      * @param view The view.
      */
     private void initUiReferences(View view) {
         lstView = (ListView) view.findViewById(R.id.history);
+        refreshLayout = (SwipeRefreshLayout) view.findViewById(R.id.swipeRefresh);
     }
 
     @Override
@@ -113,5 +127,6 @@ public class HistoryFragment extends Fragment {
      */
     public interface OnListFragmentInteractionListener {
         void onSessionSelected(Session item);
+        void onRefresh(SwipeRefreshLayout refreshLayout);
     }
 }

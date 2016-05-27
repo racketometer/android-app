@@ -1,13 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.widget.ListView xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.v4.widget.SwipeRefreshLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/history"
-    android:name="com.smap.f16.grp12.racketometer.historyFragment"
+    android:id="@+id/swipeRefresh"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:layout_marginLeft="16dp"
-    android:layout_marginRight="16dp"
-    app:layoutManager="LinearLayoutManager"
-    tools:context=".fragments.HistoryFragment"
-    tools:listitem="@layout/fragment_history_session_adaptor" />
+    android:layout_height="match_parent">
+
+    <android.widget.ListView
+        android:id="@+id/history"
+        android:name="com.smap.f16.grp12.racketometer.historyFragment"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginLeft="16dp"
+        android:layout_marginRight="16dp"
+        app:layoutManager="LinearLayoutManager"
+        tools:context=".fragments.HistoryFragment"
+        tools:listitem="@layout/fragment_history_session_adaptor" />
+
+</android.support.v4.widget.SwipeRefreshLayout>

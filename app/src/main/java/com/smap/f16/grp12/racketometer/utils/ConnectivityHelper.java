@@ -42,9 +42,7 @@ public class ConnectivityHelper {
             int exitValue = ipProcess.waitFor();
             isOnline = exitValue == 0;
 
-        } catch (IOException e) {
-            e.printStackTrace();
-        } catch (InterruptedException e) {
+        } catch (IOException | InterruptedException e) {
             e.printStackTrace();
         }
 

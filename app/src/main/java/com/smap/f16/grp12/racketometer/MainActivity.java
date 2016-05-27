@@ -12,8 +12,10 @@ import android.os.IBinder;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.util.Log;
 import android.view.MenuItem;
+import android.widget.RelativeLayout;
 import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -23,6 +25,7 @@ import com.smap.f16.grp12.racketometer.fragments.NoDataFragment;
 import com.smap.f16.grp12.racketometer.fragments.OverviewFragment;
 import com.smap.f16.grp12.racketometer.models.Session;
 import com.smap.f16.grp12.racketometer.services.PerformanceService;
+import com.smap.f16.grp12.racketometer.utils.OnSwipeTouchListener;
 import com.smap.f16.grp12.racketometer.utils.ConnectivityHelper;
 
 import java.util.ArrayList;
@@ -35,6 +38,7 @@ public class MainActivity
     private final String LOG = "MainActivity";
 
     private boolean bound = false;
+    private RelativeLayout rllMain;
     private List<Session> sessions;
 
     private PerformanceService performanceService;
@@ -43,27 +47,15 @@ public class MainActivity
 
     private TextView txtError;
 
+    private SwipeRefreshLayout refreshLayout;
+
+    //region Life cycle methods
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         initUiReferences();
-    }
-
-    private void initUiReferences() {
-        txtError = (TextView) findViewById(R.id.txt_error);
-    }
-
-    private void initMainFragment() {
-        sessions = getSessions();
-
-        if (sessions.size() == 0) {
-            showNoDataFragment();
-        } else {
-            showOverviewFragment();
-        }
-
-        updateFragmentData();
+        initGestureListener();
     }
 
     @Override
@@ -71,6 +63,12 @@ public class MainActivity
         super.onStart();
         initBroadcastListeners();
         PerformanceService.bindService(this, serviceConnection);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        initMainFragment();
     }
 
     @Override
@@ -84,13 +82,22 @@ public class MainActivity
             bound = false;
         }
     }
+    //endregion
 
+    //region Fragment methods.
     /**
-     * Handle new data broadcast reception.
+     * Init main fragment according to session data.
      */
-    private void newDataAvailable() {
+    private void initMainFragment() {
         sessions = getSessions();
-        initMainFragment();
+
+        if (sessions.size() == 0) {
+            showNoDataFragment();
+        } else {
+            showOverviewFragment();
+        }
+
+        updateFragmentData();
     }
 
     /**
@@ -110,31 +117,22 @@ public class MainActivity
         }
     }
 
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case R.id.menu_history:
-                showHistoryFragment(getSessions());
-                break;
-            case R.id.menu_refresh:
-                if (performanceService != null) {
-                    performanceService.getSessionsFromApi();
-                }
-                break;
-        }
+    /**
+     * Decide if shown fragment is of specified type.
+     *
+     * @param fragment The fragment to compare with.
+     * @return True if fragments are the same type. Otherwise false.
+     */
+    private <T extends Fragment> boolean isFragment(Class<T> fragment) {
+        Fragment currentFragment = getFragmentManager().findFragmentById(R.id.fragment_container);
 
-        return super.onOptionsItemSelected(item);
-    }
-
-    @Override
-    public void onSessionSelected(Session item) {
-        Toast.makeText(MainActivity.this, "MainActivity: session selected", Toast.LENGTH_SHORT).show();
+        return fragment != null && fragment.isAssignableFrom(currentFragment.getClass());
     }
 
     /**
      * Displays the History fragment.
      *
-     * @param sessions    The sessions to use.
+     * @param sessions The sessions to use.
      */
     private void showHistoryFragment(List<Session> sessions) {
         if (findViewById(R.id.fragment_container) == null) {
@@ -168,6 +166,11 @@ public class MainActivity
             return;
         }
 
+        if (overviewFragment instanceof HistoryFragment) {
+            getFragmentManager().popBackStack();
+            return;
+        }
+
         overviewFragment = OverviewFragment.newInstance(sessions);
 
         getFragmentManager()
@@ -176,6 +179,9 @@ public class MainActivity
                 .commit();
     }
 
+    /**
+     * Displays the No Data fragment.
+     */
     private void showNoDataFragment() {
         if (findViewById(R.id.fragment_container) == null) {
             return;
@@ -193,6 +199,7 @@ public class MainActivity
                 .replace(R.id.fragment_container, noDataFragment)
                 .commit();
     }
+    //endregion
 
     /**
      * Get sessions from performance service or empty list.
@@ -205,6 +212,35 @@ public class MainActivity
         } else {
             return new ArrayList<>();
         }
+    }
+
+    /**
+     * Initialize references to UI elements.
+     */
+    private void initUiReferences() {
+        txtError = (TextView) findViewById(R.id.txt_error);
+        rllMain = (RelativeLayout) findViewById(R.id.rll_main);
+    }
+
+    /**
+     * Init gesture listeners for changing fragments on swipes.
+     */
+    private void initGestureListener() {
+        rllMain.setOnTouchListener(new OnSwipeTouchListener(this) {
+            @Override
+            public void onSwipeLeft() {
+                if (isFragment(OverviewFragment.class)) {
+                    showHistoryFragment(sessions);
+                }
+            }
+
+            @Override
+            public void onSwipeRight() {
+                if (isFragment(HistoryFragment.class)) {
+                    showOverviewFragment();
+                }
+            }
+        });
     }
 
     /**
@@ -286,4 +322,53 @@ public class MainActivity
             super.onBackPressed();
         }
     }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.menu_history:
+                showHistoryFragment(getSessions());
+                break;
+            case R.id.menu_refresh:
+                onRefresh(null);
+                break;
+        }
+
+        return super.onOptionsItemSelected(item);
+    }
+
+    //region Callbacks
+    /**
+     * Request data from webAPI
+     *
+     * @param refreshLayout The refresh layout if any.
+     */
+    public void onRefresh(SwipeRefreshLayout refreshLayout) {
+        this.refreshLayout = refreshLayout;
+        if (performanceService != null) {
+            performanceService.getSessionsFromApi();
+        }
+    }
+
+    @Override
+    public void onSessionSelected(Session item) {
+        Toast.makeText(MainActivity.this, "MainActivity: session selected", Toast.LENGTH_SHORT).show();
+    }
+
+    /**
+     * Handle new data broadcast reception.
+     */
+    private void newDataAvailable() {
+        sessions = getSessions();
+
+        if (refreshLayout != null) {
+            refreshLayout.setRefreshing(false);
+            refreshLayout = null;
+        } else {
+            initMainFragment();
+        }
+
+        updateFragmentData();
+    }
+    //endregion
 }
