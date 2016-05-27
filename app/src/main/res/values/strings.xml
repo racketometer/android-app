@@ -20,5 +20,7 @@
     <string name="overview_power">Power</string>
     <string name="overview_chart_description">Last 5 performances</string>
 
+    <string name="history_adaptor_performance">Performance:</string>
+
     <string name="no_data_header">No data in the sky. Upload your performance to get started.</string>
 </resources>

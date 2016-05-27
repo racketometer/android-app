@@ -11,11 +11,12 @@ import com.smap.f16.grp12.racketometer.R;
 import com.smap.f16.grp12.racketometer.models.Session;
 import com.smap.f16.grp12.racketometer.utils.DateFormatter;
 import com.smap.f16.grp12.racketometer.utils.PerformanceFormatter;
+import com.smap.f16.grp12.racketometer.utils.ToStringFormatter;
 
 import java.util.List;
 
 /**
- * Adaptor for displaying the Session model
+ * Adaptor for displaying the Session model.
  */
 public class SessionAdaptor extends BaseAdapter {
 
@@ -55,11 +56,12 @@ public class SessionAdaptor extends BaseAdapter {
             return convertView;
         }
 
-        TextView txtDesc = (TextView) convertView.findViewById(R.id.adaptorDescription);
-        txtDesc.setText(session.getDescription());
+        TextView txtDescription = (TextView) convertView.findViewById(R.id.adaptorDescription);
+        txtDescription.setText(session.getDescription());
 
-        TextView txtPerf = (TextView) convertView.findViewById(R.id.adaptorPerformance);
-        txtPerf.setText("Performance: " + PerformanceFormatter.Performance(session));
+        String performance = context.getResources().getString(R.string.history_adaptor_performance);
+        TextView txtPerformance = (TextView) convertView.findViewById(R.id.adaptorPerformance);
+        txtPerformance.setText(performance + " " + ToStringFormatter.FromDouble(PerformanceFormatter.PerformanceAsDouble(session)));
 
         TextView txtDate = (TextView) convertView.findViewById(R.id.adaptorDate);
         txtDate.setText(DateFormatter.Date(session.getDate()));
