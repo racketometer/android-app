@@ -20,6 +20,12 @@ import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.facebook.FacebookSdk;
+import com.facebook.appevents.AppEventsLogger;
+
+import com.google.android.gms.maps.SupportMapFragment;
+
+import com.smap.f16.grp12.racketometer.fragments.DetailsFragment;
 import com.smap.f16.grp12.racketometer.fragments.HistoryFragment;
 import com.smap.f16.grp12.racketometer.fragments.NoDataFragment;
 import com.smap.f16.grp12.racketometer.fragments.OverviewFragment;
@@ -34,6 +40,7 @@ import java.util.List;
 public class MainActivity
         extends BaseActivity
         implements HistoryFragment.OnListFragmentInteractionListener {
+
 
     private final String LOG = "MainActivity";
 
@@ -54,6 +61,11 @@ public class MainActivity
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        // facebook app tracking
+        FacebookSdk.sdkInitialize(getApplicationContext());
+        AppEventsLogger.activateApp(this);
+
         initUiReferences();
         initGestureListener();
     }
@@ -352,7 +364,7 @@ public class MainActivity
 
     @Override
     public void onSessionSelected(Session item) {
-        Toast.makeText(MainActivity.this, "MainActivity: session selected", Toast.LENGTH_SHORT).show();
+        showDetailsFragment(R.id.fragment_container, item);
     }
 
     /**
@@ -369,6 +381,17 @@ public class MainActivity
         }
 
         updateFragmentData();
+    }
+
+    private void showDetailsFragment(int id, Session session) {
+
+        DetailsFragment fragment = DetailsFragment.newInstance(session);
+
+        getFragmentManager()
+                .beginTransaction()
+                .replace(id, fragment)
+                .addToBackStack(null)
+                .commit();
     }
     //endregion
 }

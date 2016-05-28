@@ -6,6 +6,7 @@
 
     <TextView
         android:id="@+id/adaptorDescription"
+        style="@style/History.Description"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_margin="@dimen/adaptor_text_margin"
@@ -13,6 +14,7 @@
 
     <TextView
         android:id="@+id/adaptorPerformance"
+        style="@style/History.Value"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_margin="@dimen/adaptor_text_margin"
@@ -21,6 +23,7 @@
 
     <TextView
         android:id="@+id/adaptorDate"
+        style="@style/History.Value"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_margin="@dimen/adaptor_text_margin"

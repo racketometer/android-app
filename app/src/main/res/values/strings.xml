@@ -11,6 +11,15 @@
     <string name="profile_name">Name</string>
     <string name="profile_club">Club</string>
     <string name="profile_save">Save</string>
+    <string name="history">History</string>
+    <string name="title_activity_maps">Map</string>
+
+    <string name="details_date_field">Date:</string>
+    <string name="details_description_field">Description:</string>
+    <string name="details_hits_field">Hits:</string>
+    <string name="details_performance_field">Performance:</string>
+
+    <string name="facebook_app_id">1551025941860056</string>
 
     <string name="menu_history">History</string>
     <string name="menu_refresh">Refresh</string>
@@ -25,4 +34,5 @@
     <string name="no_data_header">No data in the sky. Upload your performance to get started.</string>
 
     <string name="no_internet">You are not connected to the internet.</string>
+
 </resources>

@@ -14,6 +14,11 @@ public class PerformanceFormatter {
         return String.valueOf(accumulatedPerformance);
     }
 
+    /**
+     * Returns the sum of session attributes.
+     * @param item
+     * @return
+     */
     public static double PerformanceAsDouble(Session item) {
         return  item.getAgility() + item.getPower() + item.getSpeed();
     }

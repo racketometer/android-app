@@ -1,9 +1,11 @@
 package com.smap.f16.grp12.racketometer.models;
 
+import java.io.Serializable;
+
 /**
  * Attributes model to hold a performance attribute set.
  */
-public class Attributes {
+public class Attributes implements Serializable {
     private final double agility;
     private final double power;
     private final double speed;

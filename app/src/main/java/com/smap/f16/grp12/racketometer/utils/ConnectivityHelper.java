@@ -36,7 +36,7 @@ public class ConnectivityHelper {
         boolean isOnline = false;
 
         Runtime runtime = Runtime.getRuntime();
-
+        
         try {
             Process ipProcess = runtime.exec("/system/bin/ping -c 1 8.8.8.8");
             int exitValue = ipProcess.waitFor();

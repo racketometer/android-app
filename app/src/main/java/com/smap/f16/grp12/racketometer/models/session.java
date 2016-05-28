@@ -1,19 +1,23 @@
 package com.smap.f16.grp12.racketometer.models;
 
+import android.location.Location;
+
 import org.joda.time.DateTime;
+
+import java.io.Serializable;
 
 /**
  * Holds data from a given performance Session
  */
-public class Session {
+public class Session implements Serializable {
     private long id;
     private final DateTime date;
     private final long userId;
     private final String description;
     private final int hits;
-    private final Attributes attributes;
-    private final double longitude;
     private final double latitude;
+    private final double longitude;
+    private final Attributes attributes;
 
     public Session(long id, DateTime date, long userId, String description, int hits, double speed, double power, double agility, double latitude, double longitude) {
         this.id = id;
@@ -21,9 +25,9 @@ public class Session {
         this.userId = userId;
         this.description = description;
         this.hits = hits;
-        this.attributes = new Attributes(agility, power, speed);
-        this.longitude = longitude;
         this.latitude = latitude;
+        this.longitude = longitude;
+        this.attributes = new Attributes(agility, power, speed);
     }
 
     public Session(DateTime date, long userId, String description, int hits, double speed, double power, double agility, double latitude, double longitude) {
@@ -31,9 +35,9 @@ public class Session {
         this.userId = userId;
         this.description = description;
         this.hits = hits;
-        this.attributes = new Attributes(agility, power, speed);
-        this.longitude = longitude;
         this.latitude = latitude;
+        this.longitude = longitude;
+        this.attributes = new Attributes(agility, power, speed);
     }
 
     public long getId() {
