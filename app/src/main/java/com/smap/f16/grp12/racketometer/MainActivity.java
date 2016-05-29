@@ -1,6 +1,7 @@
 package com.smap.f16.grp12.racketometer;
 
 import android.app.Fragment;
+import android.app.FragmentManager;
 import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.Context;
@@ -25,6 +26,7 @@ import com.smap.f16.grp12.racketometer.fragments.DetailsFragment;
 import com.smap.f16.grp12.racketometer.fragments.HistoryFragment;
 import com.smap.f16.grp12.racketometer.fragments.NoDataFragment;
 import com.smap.f16.grp12.racketometer.fragments.OverviewFragment;
+import com.smap.f16.grp12.racketometer.models.FragmentEnum;
 import com.smap.f16.grp12.racketometer.models.Session;
 import com.smap.f16.grp12.racketometer.services.PerformanceService;
 import com.smap.f16.grp12.racketometer.utils.ConnectivityHelper;
@@ -51,6 +53,11 @@ public class MainActivity
 
     private SwipeRefreshLayout refreshLayout;
 
+    private final String FRAGMENT = "fragment";
+    private final String SESSION_ID = "session_id";
+    private int shownFragment;
+    private long sessionId;
+
     //region Life cycle methods
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -61,8 +68,32 @@ public class MainActivity
         FacebookSdk.sdkInitialize(getApplicationContext());
         AppEventsLogger.activateApp(getApplication());
 
+        getSavedInstanceData(savedInstanceState);
+
         initUiReferences();
         initGestureListener();
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+
+        outState.putInt(FRAGMENT, shownFragment);
+        if(shownFragment == FragmentEnum.DETAILS.getValue()) {
+            outState.putLong(SESSION_ID, sessionId);
+        }
+    }
+
+    private void getSavedInstanceData(Bundle savedInstanceState) {
+        if (savedInstanceState == null) {
+            return;
+        }
+
+        shownFragment = savedInstanceState.getInt(FRAGMENT);
+
+        if(shownFragment == FragmentEnum.DETAILS.getValue()) {
+            sessionId = savedInstanceState.getLong(SESSION_ID);
+        }
     }
 
     @Override
@@ -101,7 +132,20 @@ public class MainActivity
         if (sessions.size() == 0) {
             showNoDataFragment();
         } else {
-            showOverviewFragment();
+            switch (shownFragment) {
+                case 1:  showHistoryFragment(sessions);
+                    break;
+                case 2:
+                    for(Session session : sessions) {
+                        if(session.getId() == sessionId) {
+                            showDetailsFragment(R.id.fragment_container, session);
+                            break;
+                        }
+                    }
+                    break;
+                default: showOverviewFragment();
+                    break;
+            }
         }
 
         updateFragmentData();
@@ -151,6 +195,7 @@ public class MainActivity
             return;
         }
 
+        shownFragment = FragmentEnum.HISTORY.getValue();
         historyFragment = HistoryFragment.newInstance(sessions);
 
         getFragmentManager()
@@ -178,6 +223,7 @@ public class MainActivity
             return;
         }
 
+        shownFragment = FragmentEnum.OVERVIEW.getValue();
         overviewFragment = OverviewFragment.newInstance(sessions);
 
         getFragmentManager()
@@ -204,6 +250,31 @@ public class MainActivity
         getFragmentManager()
                 .beginTransaction()
                 .replace(R.id.fragment_container, noDataFragment)
+                .commit();
+    }
+
+    /**
+     * Displays the Details fragment.
+     */
+    private void showDetailsFragment(int id, Session session) {
+        if (findViewById(R.id.fragment_container) == null) {
+            return;
+        }
+
+        Fragment detailsFragment = getFragmentManager().findFragmentById(R.id.fragment_container);
+        if (detailsFragment instanceof DetailsFragment) {
+            return;
+        }
+
+        DetailsFragment fragment = DetailsFragment.newInstance(session);
+
+        shownFragment = FragmentEnum.DETAILS.getValue();
+        sessionId = session.getId();
+
+        getFragmentManager()
+                .beginTransaction()
+                .replace(id, fragment)
+                .addToBackStack(null)
                 .commit();
     }
     //endregion
@@ -329,7 +400,18 @@ public class MainActivity
         if (drawer != null && drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
         } else {
+            switch (shownFragment) {
+                case 1:
+                    shownFragment = 0;
+                    break;
+                case 2:
+                    shownFragment = 1;
+                    break;
+                default:
+                    break;
+            }
             super.onBackPressed();
+            initMainFragment();
         }
     }
 
@@ -379,17 +461,6 @@ public class MainActivity
         }
 
         updateFragmentData();
-    }
-
-    private void showDetailsFragment(int id, Session session) {
-
-        DetailsFragment fragment = DetailsFragment.newInstance(session);
-
-        getFragmentManager()
-                .beginTransaction()
-                .replace(id, fragment)
-                .addToBackStack(null)
-                .commit();
     }
     //endregion
 }

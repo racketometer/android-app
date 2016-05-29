@@ -86,7 +86,7 @@ public class PerformanceApi extends AsyncTask<Void, Void, List<Session>> {
     private String downloadUrl(String urlString) throws IOException {
         ConnectivityHelper connectivityHelper = new ConnectivityHelper(context);
 
-        if (connectivityHelper.isOnline()) {
+        if (true /*connectivityHelper.isOnline()*/ ){
             InputStream is = null;
             HttpURLConnection conn = null;
 
