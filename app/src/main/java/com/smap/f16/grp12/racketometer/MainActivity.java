@@ -15,24 +15,20 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.util.Log;
 import android.view.MenuItem;
-import android.widget.RelativeLayout;
 import android.view.View;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.facebook.FacebookSdk;
 import com.facebook.appevents.AppEventsLogger;
-
-import com.google.android.gms.maps.SupportMapFragment;
-
 import com.smap.f16.grp12.racketometer.fragments.DetailsFragment;
 import com.smap.f16.grp12.racketometer.fragments.HistoryFragment;
 import com.smap.f16.grp12.racketometer.fragments.NoDataFragment;
 import com.smap.f16.grp12.racketometer.fragments.OverviewFragment;
 import com.smap.f16.grp12.racketometer.models.Session;
 import com.smap.f16.grp12.racketometer.services.PerformanceService;
-import com.smap.f16.grp12.racketometer.utils.OnSwipeTouchListener;
 import com.smap.f16.grp12.racketometer.utils.ConnectivityHelper;
+import com.smap.f16.grp12.racketometer.utils.OnSwipeTouchListener;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -40,7 +36,6 @@ import java.util.List;
 public class MainActivity
         extends BaseActivity
         implements HistoryFragment.OnListFragmentInteractionListener {
-
 
     private final String LOG = "MainActivity";
 
@@ -64,7 +59,7 @@ public class MainActivity
 
         // facebook app tracking
         FacebookSdk.sdkInitialize(getApplicationContext());
-        AppEventsLogger.activateApp(this);
+        AppEventsLogger.activateApp(getApplication());
 
         initUiReferences();
         initGestureListener();
@@ -282,6 +277,9 @@ public class MainActivity
      * @param intent The intent.
      */
     private void internetStatusAvailable(Intent intent) {
+        if(refreshLayout != null) {
+            refreshLayout.setRefreshing(false);
+        }
         boolean isOnline = intent.getBooleanExtra(ConnectivityHelper.EXTRA_STATUS, false);
         if(isOnline) {
             txtError.setVisibility(View.GONE);
