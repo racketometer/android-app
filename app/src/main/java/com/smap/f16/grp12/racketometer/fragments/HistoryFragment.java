@@ -13,8 +13,10 @@ import android.widget.ListView;
 import com.smap.f16.grp12.racketometer.R;
 import com.smap.f16.grp12.racketometer.adaptors.SessionAdaptor;
 import com.smap.f16.grp12.racketometer.models.Session;
+import com.smap.f16.grp12.racketometer.utils.DateComparator;
 
 import java.io.Serializable;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -76,6 +78,9 @@ public class HistoryFragment extends Fragment {
      * Sets the adaptor on the listView and adds an event listener
      */
     private void initListView() {
+        Collections.sort(sessions, new DateComparator());
+        Collections.reverse(sessions);
+
         SessionAdaptor sessionAdaptor = new SessionAdaptor(this.getContext(), sessions);
         lstView.setAdapter(sessionAdaptor);
 
