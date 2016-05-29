@@ -1,75 +1,65 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                xmlns:tools="http://schemas.android.com/tools"
-                android:orientation="vertical"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                tools:context="com.smap.f16.grp12.racketometer.fragments.DetailsFragment">
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context="com.smap.f16.grp12.racketometer.fragments.DetailsFragment">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="0dp"
-        android:layout_alignParentTop="true"
-        android:weightSum="2">
+        android:baselineAligned="false">
 
         <RelativeLayout
             android:id="@+id/details_top_left"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_weight="0.8">
+            android:layout_weight="1">
 
             <TextView
                 android:id="@+id/date_field"
                 style="@style/Details.Label"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textStyle="bold"
-                android:layout_margin="@dimen/details_text_margin"
-                android:text="@string/details_date_field"/>
+                android:layout_marginBottom="@dimen/details_text_margin"
+                android:layout_marginLeft="@dimen/details_text_margin"
+                android:layout_marginRight="@dimen/details_text_margin"
+                android:text="@string/details_date_field" />
 
             <TextView
                 android:id="@+id/date_input"
                 style="@style/Details.Value"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentRight="true"
+                android:layout_alignBaseline="@id/date_field"
+                android:layout_alignParentEnd="true"
                 android:layout_margin="@dimen/details_text_margin" />
 
             <TextView
                 android:id="@+id/hits_field"
                 style="@style/Details.Label"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
                 android:layout_below="@id/date_field"
                 android:layout_margin="@dimen/details_text_margin"
-                android:text="@string/details_hits_field"/>
+                android:text="@string/details_hits_field" />
 
             <TextView
                 android:id="@+id/hits_input"
                 style="@style/Details.Value"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_alignBaseline="@id/hits_field"
+                android:layout_alignParentEnd="true"
                 android:layout_below="@id/date_input"
-                android:layout_alignParentRight="true"
                 android:layout_margin="@dimen/details_text_margin" />
 
             <TextView
                 android:id="@+id/performance_field"
                 style="@style/Details.Label"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
                 android:layout_below="@id/hits_field"
                 android:layout_margin="@dimen/details_text_margin"
-                android:text="@string/details_performance_field"/>
+                android:text="@string/details_performance_field" />
 
             <TextView
                 android:id="@+id/performance_input"
                 style="@style/Details.Value"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_alignBaseline="@id/performance_field"
+                android:layout_alignParentEnd="true"
                 android:layout_below="@id/hits_input"
-                android:layout_alignParentRight="true"
                 android:layout_margin="@dimen/details_text_margin" />
 
         </RelativeLayout>
@@ -77,66 +67,48 @@
         <RelativeLayout
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_weight="0.8">
+            android:layout_weight="1">
 
             <TextView
                 android:id="@+id/description_field"
                 style="@style/Details.Label"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
                 android:layout_marginLeft="@dimen/details_text_margin"
                 android:layout_marginRight="@dimen/details_text_margin"
-                android:layout_marginBottom="@dimen/details_text_margin"
-                android:layout_margin="@dimen/details_text_margin"
-                android:text="@string/details_description_field"/>
+                android:text="@string/details_description_field" />
 
             <TextView
                 android:id="@+id/description_input"
                 style="@style/Details.Value"
-                android:layout_width="match_parent"
-                android:layout_height="200dp"
                 android:layout_below="@id/description_field"
                 android:layout_marginLeft="@dimen/details_text_margin"
                 android:layout_marginRight="@dimen/details_text_margin" />
 
         </RelativeLayout>
 
-        <RelativeLayout
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="0.4">
-
-            <com.facebook.share.widget.ShareButton
-                android:id="@+id/fb_share_button"
-                android:layout_width="80dp"
-                android:layout_height="40dp"
-                android:layout_alignParentRight="true"
-                android:layout_marginBottom="20dp"/>
-
-        </RelativeLayout>
-
+        <com.facebook.share.widget.ShareButton
+            android:id="@+id/fb_share_button"
+            android:layout_width="wrap_content"
+            android:layout_height="@dimen/fb_share_height"
+            android:layout_alignParentEnd="true" />
 
     </LinearLayout>
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:weightSum="2">
+        android:layout_height="0dp"
+        android:layout_weight="1">
 
         <com.github.mikephil.charting.charts.HorizontalBarChart
             android:id="@+id/detailsBarChart"
-            android:layout_width="200dp"
-            android:layout_height="160dp"
-            android:layout_weight="1.4"
-            android:layout_alignParentBottom="true"/>
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="2" />
 
         <com.google.android.gms.maps.MapView
             android:id="@+id/map"
-            android:layout_width="150dp"
-            android:layout_height="150dp"
-            android:layout_weight="0.6"
-            android:layout_alignParentRight="true"/>
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1" />
 
     </LinearLayout>
-</RelativeLayout>
+</LinearLayout>

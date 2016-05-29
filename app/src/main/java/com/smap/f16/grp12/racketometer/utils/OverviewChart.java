@@ -76,11 +76,11 @@ public class OverviewChart {
 
         BarDataSet agilitySet = new BarDataSet(performanceValues, resources.getString(R.string.overview_agility));
 
-        agilitySet.setColor(resources.getColor(R.color.colorAccent, null));
+        agilitySet.setColor(resources.getColor(R.color.color_accent, null));
 
         BarData barData = new BarData(xValues, agilitySet);
         barData.setDrawValues(false);
         chart.setData(barData);
-        chart.animateY(resources.getInteger(R.integer.overview_chart));
+        chart.animateY(resources.getInteger(R.integer.chart_animation));
     }
 }

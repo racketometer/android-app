@@ -7,27 +7,22 @@
     <TextView
         android:id="@+id/adaptorDescription"
         style="@style/History.Description"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_margin="@dimen/adaptor_text_margin"
+        android:layout_margin="@dimen/history_text_margin"
         android:textAppearance="?attr/textAppearanceListItem" />
 
     <TextView
         android:id="@+id/adaptorPerformance"
         style="@style/History.Value"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_margin="@dimen/adaptor_text_margin"
+        android:layout_margin="@dimen/history_text_margin"
         android:layout_below="@id/adaptorDescription"
         android:textAppearance="?attr/textAppearanceListItem" />
 
     <TextView
         android:id="@+id/adaptorDate"
         style="@style/History.Value"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_margin="@dimen/adaptor_text_margin"
+        android:layout_margin="@dimen/history_text_margin"
         android:layout_alignParentEnd="true"
         android:layout_below="@id/adaptorDescription"
         android:textAppearance="?attr/textAppearanceListItem" />
+
 </RelativeLayout>

@@ -1,8 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">#659DDC</color>
-    <color name="colorPrimaryDark">#FFAB70</color>
-    <color name="colorAccent">#FF707E</color>
+    <color name="color_primary">#659DDC</color>
+    <color name="color_primary_dark">#FFAB70</color>
+    <color name="color_accent">#FF707E</color>
 
-    <color name="colorError">#444444</color>
+    <color name="color_error">#444444</color>
+    <color name="color_error_text">#FFFFFF</color>
+
+    <color name="color_label">@color/color_primary_dark</color>
+    <color name="color_value">@color/color_accent</color>
 </resources>

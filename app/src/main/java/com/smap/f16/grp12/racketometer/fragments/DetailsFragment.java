@@ -1,20 +1,19 @@
 package com.smap.f16.grp12.racketometer.fragments;
 
-import android.content.Context;
-import android.graphics.Bitmap;
+import android.app.Fragment;
+import android.content.res.Resources;
 import android.net.Uri;
 import android.os.Bundle;
-import android.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-
 import com.facebook.share.model.ShareLinkContent;
 import com.facebook.share.widget.ShareButton;
-import com.github.mikephil.charting.animation.Easing;
 import com.github.mikephil.charting.charts.HorizontalBarChart;
+import com.github.mikephil.charting.components.XAxis;
+import com.github.mikephil.charting.components.YAxis;
 import com.github.mikephil.charting.data.BarData;
 import com.github.mikephil.charting.data.BarDataSet;
 import com.github.mikephil.charting.data.BarEntry;
@@ -37,45 +36,37 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Stuff.
- * How to setup the Horizontal-BarChart is inspired by the answer from Amir in this stackoverflow:
- * http://stackoverflow.com/questions/28850411/mpandroidchart-barchart-horizontal-vertical
+ * How to setup the Horizontal-BarChart is inspired by this StackOverflow:
+ * http://stackoverflow.com/a/32225844/5324369
  */
 public class DetailsFragment extends Fragment implements OnMapReadyCallback {
-
-    // viewmodel
     private Session session;
-    // const string
     private static final String SESSION =
-            "com.smap.f16.grp12.racketometer.fragments.HistoryFragment.SESSION";
-    // View related
+            "com.smap.f16.grp12.racketometer.fragments.DetailsFragment.SESSION";
+
     private HorizontalBarChart barChart;
     private TextView dateInput;
     private TextView descriptionInput;
     private TextView hitsInput;
     private TextView performanceInput;
     private ShareButton shareButton;
-    private GoogleMap mMap;
     private MapView mapView;
-    private View rootView;
 
-    public DetailsFragment() {}
+    private Resources resources;
+
+    public DetailsFragment() {
+    }
 
     public static DetailsFragment newInstance(Session session) {
         DetailsFragment fragment = new DetailsFragment();
 
-        if(session != null) {
+        if (session != null) {
             Bundle args = new Bundle();
 
             args.putSerializable(SESSION, session);
             fragment.setArguments(args);
         }
         return fragment;
-    }
-
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
     }
 
     /**
@@ -85,28 +76,19 @@ public class DetailsFragment extends Fragment implements OnMapReadyCallback {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        rootView = inflater.inflate(R.layout.fragment_details, container, false);
+        View rootView = inflater.inflate(R.layout.fragment_details, container, false);
 
         MapsInitializer.initialize(this.getActivity());
         mapView = (MapView) rootView.findViewById(R.id.map);
         mapView.onCreate(savedInstanceState);
         mapView.getMapAsync(this);
 
+        resources = getResources();
         getSession();
         initUiReferences(rootView);
         initFields();
-        setBarData();
+        initChart();
         return rootView;
-    }
-
-    @Override
-    public void onAttach(Context context) {
-        super.onAttach(context);
-    }
-
-    @Override
-    public void onDetach() {
-        super.onDetach();
     }
 
     private void initUiReferences(View view) {
@@ -115,7 +97,7 @@ public class DetailsFragment extends Fragment implements OnMapReadyCallback {
         descriptionInput = (TextView) view.findViewById(R.id.description_input);
         hitsInput = (TextView) view.findViewById(R.id.hits_input);
         performanceInput = (TextView) view.findViewById(R.id.performance_input);
-        shareButton = (ShareButton)view.findViewById(R.id.fb_share_button);
+        shareButton = (ShareButton) view.findViewById(R.id.fb_share_button);
     }
 
     private void initFields() {
@@ -138,46 +120,79 @@ public class DetailsFragment extends Fragment implements OnMapReadyCallback {
      */
     private void getSession() {
         Bundle args = getArguments();
-        if(args == null) {
+        if (args == null) {
             return;
         }
         session = (Session) args.getSerializable(SESSION);
     }
 
     /**
-     * Initializes the barData
+     * Initializes chart
      */
-    private void setBarData() {
-        BarData t = new BarData();
+    private void initChart() {
         BarData data = new BarData(getXAxisValues(), getDataSet());
         barChart.setData(data);
-        barChart.setDescription("My Chart");
-        barChart.animateY(2500, Easing.EasingOption.EaseOutSine);
-        barChart.invalidate();
+        barChart.setDescription("");
+
+        barChart.getLegend().setEnabled(false);
+
+
+        XAxis verticalAxis = barChart.getXAxis();
+        verticalAxis.setDrawGridLines(false);
+
+        YAxis horizontalAxis = barChart.getAxisRight();
+        horizontalAxis.setEnabled(false);
+        horizontalAxis.setDrawGridLines(false);
+        horizontalAxis.setDrawAxisLine(false);
+        horizontalAxis.setAxisMinValue(0);
+
+        barChart.getAxisLeft().setAxisMinValue(0);
+        barChart.getAxisLeft().setAxisMaxValue((float) getMaxValue() + 3);
+
+        int textSize = resources.getDimensionPixelSize(R.dimen.chart_text_size);
+        verticalAxis.setTextSize(textSize);
+        horizontalAxis.setTextSize(textSize);
+        data.setValueTextSize(resources.getDimension(R.dimen.chart_text_size));
+
+        barChart.animateY(resources.getInteger(R.integer.chart_animation));
     }
 
     /**
-     * Initializes the barDataSet
-     * @return
+     * Find maximum value of attributes.
+     * @return The maximum value.
+     */
+    private double getMaxValue() {
+        double maxValue = session.getPower();
+
+        if(maxValue < session.getSpeed()) {
+            maxValue = session.getSpeed();
+        }
+
+        if(maxValue < session.getAgility()) {
+            maxValue = session.getAgility();
+        }
+
+        return maxValue;
+    }
+
+    /**
+     * Get data sets.
+     *
+     * @return The data sets.
      */
     private IBarDataSet getDataSet() {
+        ArrayList<BarEntry> dataSets = new ArrayList<>();
+        BarEntry agilitySet = new BarEntry((float) session.getAgility(), 0);
+        dataSets.add(agilitySet);
 
-        ArrayList<BarEntry> valueSet1 = new ArrayList<>();
-        float[] test = new float[] {0,(float)session.getAgility() };
-        BarEntry v1e1 = new BarEntry((float)session.getAgility(), 0); // Agility
-        valueSet1.add(v1e1);
-        BarEntry v1e2 = new BarEntry((float)session.getPower(), 1); // Power
-        valueSet1.add(v1e2);
-        BarEntry v1e3 = new BarEntry((float)session.getSpeed(), 2); // Speed
-        valueSet1.add(v1e3);
+        BarEntry powerSet = new BarEntry((float) session.getPower(), 1);
+        dataSets.add(powerSet);
 
-        BarDataSet barDataSet = new BarDataSet(valueSet1, "");
+        BarEntry speedSet = new BarEntry((float) session.getSpeed(), 2);
+        dataSets.add(speedSet);
 
-        // Set min - max
-        barChart.getAxisLeft().setAxisMinValue(0);
-        barChart.getAxisLeft().setAxisMaxValue(15);
+        BarDataSet barDataSet = new BarDataSet(dataSets, "");
 
-        // Set colors to colorful
         barDataSet.setColors(ColorTemplate.COLORFUL_COLORS);
 
         return barDataSet;
@@ -185,22 +200,21 @@ public class DetailsFragment extends Fragment implements OnMapReadyCallback {
 
     /**
      * Initializes XAxis Values of HorizontalBarChart
-     * @return
+     *
+     * @return List of axis string values.
      */
     private List<String> getXAxisValues() {
-        ArrayList<String> xAxis = new ArrayList<>();
-        xAxis.add("Agility");
-        xAxis.add("Power");
-        xAxis.add("Speed");
+        List<String> xAxis = new ArrayList<>();
+        xAxis.add(resources.getString(R.string.overview_agility));
+        xAxis.add(resources.getString(R.string.overview_power));
+        xAxis.add(resources.getString(R.string.overview_speed));
         return xAxis;
     }
 
     @Override
     public void onMapReady(GoogleMap googleMap) {
-        mMap = googleMap;
-
         LatLng location = new LatLng(56.193846, 10.247143);
-        mMap.addMarker(new MarkerOptions().position(location).title("You where here"));
+        googleMap.addMarker(new MarkerOptions().position(location).title("You where here"));
         googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(location, 11));
     }
 

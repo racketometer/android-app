@@ -11,8 +11,8 @@
         android:name="com.smap.f16.grp12.racketometer.historyFragment"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginLeft="16dp"
-        android:layout_marginRight="16dp"
+        android:layout_marginLeft="@dimen/activity_horizontal_margin"
+        android:layout_marginRight="@dimen/activity_horizontal_margin"
         app:layoutManager="LinearLayoutManager"
         tools:context=".fragments.HistoryFragment"
         tools:listitem="@layout/fragment_history_session_adaptor" />

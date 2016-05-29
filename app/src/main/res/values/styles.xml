@@ -1,9 +1,9 @@
 <resources>
 
     <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
-        <item name="colorPrimary">@color/colorPrimary</item>
-        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
-        <item name="colorAccent">@color/colorAccent</item>
+        <item name="colorPrimary">@color/color_primary</item>
+        <item name="colorPrimaryDark">@color/color_primary_dark</item>
+        <item name="colorAccent">@color/color_accent</item>
     </style>
 
     <style name="AppTheme.NoActionBar">
@@ -20,56 +20,53 @@
         <item name="android:layout_weight">1</item>
         <item name="android:layout_height">wrap_content</item>
         <item name="android:gravity">center</item>
-        <item name="android:textColor">@color/colorPrimaryDark</item>
+        <item name="android:textColor">@color/color_label</item>
     </style>
 
     <style name="Overview.Value" parent="TextAppearance.AppCompat.Large">
         <item name="android:layout_width">0dp</item>
         <item name="android:layout_weight">1</item>
         <item name="android:layout_height">wrap_content</item>
-        <item name="android:textColor">@color/colorAccent</item>
+        <item name="android:textColor">@color/color_value</item>
         <item name="android:gravity">center</item>
     </style>
 
     <style name="Details.Label" parent="TextAppearance.AppCompat.Medium">
-        <item name="android:layout_width">0dp</item>
-        <item name="android:layout_weight">1</item>
+        <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>
         <item name="android:textSize">@dimen/details_label_text_size</item>
         <item name="android:textStyle">bold</item>
-        <item name="android:textColor">@color/colorPrimaryDark</item>
+        <item name="android:textColor">@color/color_label</item>
     </style>
 
     <style name="Details.Value" parent="TextAppearance.AppCompat.Large">
-        <item name="android:layout_width">0dp</item>
-        <item name="android:layout_weight">1</item>
+        <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>
         <item name="android:textSize">@dimen/details_value_text_size</item>
-        <item name="android:textColor">@color/colorAccent</item>
+        <item name="android:textColor">@color/color_value</item>
     </style>
 
     <style name="History.Description" parent="TextAppearance.AppCompat.Medium">
-        <item name="android:layout_width">0dp</item>
+        <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_weight">2</item>
         <item name="android:layout_height">wrap_content</item>
-        <item name="android:gravity">center</item>
-        <item name="android:textSize">16dp</item>
-        <item name="android:textColor">@color/colorPrimaryDark</item>
+        <item name="android:textSize">@dimen/history_text_size</item>
+        <item name="android:textColor">@color/color_primary_dark</item>
     </style>
 
     <style name="History.Value" parent="TextAppearance.AppCompat.Large">
-        <item name="android:layout_width">0dp</item>
+        <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_weight">0.4</item>
         <item name="android:layout_height">wrap_content</item>
-        <item name="android:textSize">16dp</item>
-        <item name="android:textColor">@color/colorAccent</item>
+        <item name="android:textSize">@dimen/history_text_size</item>
+        <item name="android:textColor">@color/color_value</item>
     </style>
 
     <style name="Error">
-        <item name="android:background">@color/colorError</item>
-        <item name="android:textSize">16sp</item>
-        <item name="android:textColor">#FFFFFF</item>
+        <item name="android:background">@color/color_error</item>
+        <item name="android:textSize">@dimen/text_size</item>
+        <item name="android:textColor">@color/color_error_text</item>
         <item name="android:gravity">center</item>
-        <item name="android:layout_height">48dp</item>
+        <item name="android:layout_height">@dimen/error_height</item>
     </style>
 </resources>
